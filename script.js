@@ -28,18 +28,47 @@
 let url = 'https://jsonplaceholder.typicode.com/posts';
 
 const sendPost = () => {
-   const request = new XMLHttpRequest();
-   request.addEventListener('readystatechange', () => {
-      if (request.readyState !== 4) { return };
-      if (request.status === 200) {
-         let data = JSON.parse(request.responseText);
-         createWrap(data);
-      }
+   return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.addEventListener('readystatechange', () => {
+         if (request.readyState !== 4) { return };
+         if (request.status === 200) {
+            let data = JSON.parse(request.responseText);
+            resolve(data);
+         } else {
+            reject('Беда печаль. Получилась ошибка');
+         }
+
+      });
+      request.open('GET', url);
+      request.setRequestHeader('Content-type', 'application/json');
+      request.send();
    });
-   request.open('GET', url);
-   request.setRequestHeader('Content-type', 'application/json');
-   request.send();
 }
+
+sendPost()
+   .then((data) => { createWrap(data) })
+   .catch((error) => { console.error(error) })
+   .finally(() => console.log('Все сделано'));
+
+
+
+
+
+
+// const sendPost = () => {
+//    const request = new XMLHttpRequest();
+//    request.addEventListener('readystatechange', () => {
+//       if (request.readyState !== 4) { return };
+//       if (request.status === 200) {
+//          let data = JSON.parse(request.responseText);
+//          createWrap(data);
+//       }
+//    });
+//    request.open('GET', url);
+//    request.setRequestHeader('Content-type', 'application/json');
+//    request.send();
+// }
 
 const createWrap = (data) => {
    data.forEach((item) => {
@@ -55,4 +84,4 @@ const createWrap = (data) => {
    });
 }
 
-sendPost();
+// sendPost();
